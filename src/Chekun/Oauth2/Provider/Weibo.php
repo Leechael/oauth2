@@ -45,9 +45,9 @@ class Weibo extends Oauth2Provider implements Oauth2ProviderInterface {
             'location' => $user->location,
             'description' => $user->description,
             'image' => $user->profile_image_url,
-            'access_token' => $token->access_token,
+            'access_token' => $token->accessToken,
             'expire_at' => $token->expires,
-            'refresh_token' => $token->refresh_token
+            'refresh_token' => $token->refreshToken
         );
     }
 }
