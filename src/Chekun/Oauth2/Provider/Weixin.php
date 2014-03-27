@@ -33,6 +33,12 @@ class Weixin extends Oauth2Provider implements Oauth2ProviderInterface {
         return 'https://api.weixin.qq.com/sns/oauth2/access_token';
     }
 
+    public function authorize($options = array())
+    {
+        $url = parent::authorize($options);
+        return $url . "#wechat_redirect";
+    }
+
     public function getUserInfo(AccessToken $token)
     {
         $url = static::API_URL . 'sns/userinfo?'.http_build_query(array(
