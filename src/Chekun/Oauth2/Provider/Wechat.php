@@ -5,11 +5,11 @@ use Chekun\Oauth2\Oauth2ProviderInterface;
 use Chekun\Oauth2\Oauth2Exception;
 use Chekun\Oauth2\Token\AccessToken;
 
-class Weixin extends Oauth2Provider implements Oauth2ProviderInterface {
+class Wechat extends Oauth2Provider implements Oauth2ProviderInterface {
 
     const API_URL = 'https://api.weixin.qq.com/';
 
-    public $name = 'weixin';
+    public $name = 'wechat';
 
     public $human = '微信';
 
@@ -51,7 +51,7 @@ class Weixin extends Oauth2Provider implements Oauth2ProviderInterface {
             throw new OAuth2Exception((array) $user);
         }
         return array(
-            'via' => 'weixin',
+            'via' => 'wechat',
             'uid' => $user->openid,
             'screen_name' => $user->nickname,
             'name' => $user->nickname,
