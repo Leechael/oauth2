@@ -24,7 +24,7 @@ class OAuth2Session {
         }
     }
 
-    public static function read ($key, $value)
+    public static function read ($key)
     {
         if (static::isLaravel()) {
             return \Session::get($key);
