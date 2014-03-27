@@ -1,6 +1,7 @@
 <?php namespace Chekun\Oauth2;
 
 use Chekun\Oauth2\Token\Token;
+use Chekun\Oauth2\OAuth2Session;
 use Buzz\Browser;
 use Buzz\Client\Curl;
 
@@ -65,7 +66,7 @@ abstract class OAuth2Provider {
     public function authorize($options = array())
     {
         $state = md5(uniqid(rand(), true));
-        $_SESSION['state'] = $state;
+        OAuth2Session::write("oauth2_state", $state);
         $params = array(
             $this->clientIdKey 		=> $this->clientId,
             $this->redirectUriKey 	=> isset($options[$this->redirectUriKey]) ? $options[$this->redirectUriKey] : $this->redirectUri,
@@ -84,7 +85,7 @@ abstract class OAuth2Provider {
 
     public function access($code, $options = array())
     {
-        if (isset($_GET[$this->stateKey]) AND $_GET[$this->stateKey] != $_SESSION['state'])
+        if (isset($_GET[$this->stateKey]) AND $_GET[$this->stateKey] != OAuth2Session::read('oauth2_state'))
         {
             throw new Oauth2Exception(array('code' => '403', 'message' => 'The state does not match. Maybe you are a victim of CSRF.'));
         }
