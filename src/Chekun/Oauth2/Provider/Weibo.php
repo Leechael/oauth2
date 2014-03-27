@@ -27,6 +27,16 @@ class Weibo extends Oauth2Provider implements Oauth2ProviderInterface {
         return 'https://api.weibo.com/oauth2/access_token';
     }
 
+    public function access($code, $options = array())
+    {
+        if (isset($_GET["error"])) {
+            $errcode = $_GET["error_code"];
+            $errdesc = $_GET["error_description"];
+            throw new Oauth2Exception(["code" => $errcode, "message" => $errdesc]);
+        }
+        return parent::access($code, $options);
+    }
+
     public function getUserInfo(AccessToken $token)
     {
         $url = static::API_URL . 'users/show.json?'.http_build_query(array(
