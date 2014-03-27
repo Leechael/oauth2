@@ -38,7 +38,7 @@ $info = $provider->getUserInfo($token);
 Route::get("login", function(){
     if (Auth::guest()) {
         if (Agent::isMobile() && Agent::match("MicroMessenger")) {
-            $provider = Oauth2::make("weixin");
+            $provider = Oauth2::make("wechat");
         } else {
             $provider = Oauth2::make("weibo");
             if (Agent::isMobile()) {
