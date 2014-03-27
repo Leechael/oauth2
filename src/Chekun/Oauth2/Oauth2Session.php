@@ -18,7 +18,7 @@ class OAuth2Session {
     public static function write ($key, $value)
     {
         if (static::isLaravel()) {
-            Session::flash($key, $value);
+            \Session::flash($key, $value);
         } else {
             $_SESSION[$key] = $value;
         }
@@ -27,7 +27,7 @@ class OAuth2Session {
     public static function read ($key, $value)
     {
         if (static::isLaravel()) {
-            return Session::get($key);
+            return \Session::get($key);
         } else {
             // @FIXME Not safe enough.
             return $_SESSION[$key];
