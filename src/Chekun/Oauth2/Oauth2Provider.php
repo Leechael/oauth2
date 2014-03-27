@@ -68,11 +68,11 @@ abstract class OAuth2Provider {
         $state = md5(uniqid(rand(), true));
         OAuth2Session::write("oauth2_state", $state);
         $params = array(
-            $this->clientIdKey 		=> $this->clientId,
-            $this->redirectUriKey 	=> isset($options[$this->redirectUriKey]) ? $options[$this->redirectUriKey] : $this->redirectUri,
-            $this->stateKey 		=> $state,
-            'scope'				=> is_array($this->scope) ? implode($this->scopeSeperator, $this->scope) : $this->scope,
-            'response_type' 	=> 'code',
+            $this->clientIdKey      => $this->clientId,
+            $this->redirectUriKey   => isset($options[$this->redirectUriKey]) ? $options[$this->redirectUriKey] : $this->redirectUri,
+            $this->stateKey         => $state,
+            'scope'             => is_array($this->scope) ? implode($this->scopeSeperator, $this->scope) : $this->scope,
+            'response_type'     => 'code',
             'approval_prompt'   => 'force' // - google force-recheck
         );
 
@@ -90,9 +90,9 @@ abstract class OAuth2Provider {
             throw new Oauth2Exception(array('code' => '403', 'message' => 'The state does not match. Maybe you are a victim of CSRF.'));
         }
         $params = array(
-            $this->clientIdKey 	=> $this->clientId,
+            $this->clientIdKey  => $this->clientId,
             $this->clientSecretKey => $this->clientSecret,
-            'grant_type' 	=> isset($options['grant_type']) ? $options['grant_type'] : 'authorization_code',
+            'grant_type'    => isset($options['grant_type']) ? $options['grant_type'] : 'authorization_code',
         );
 
         $params = array_merge($params, $this->params);
@@ -126,7 +126,7 @@ abstract class OAuth2Provider {
             default:
                 throw new \OutOfBoundsException("Method '{$this->method}' must be either GET or POST");
         }
-		
+        
         if ( ! empty($return[$this->errorKey]) OR ! isset($return['access_token'])) {
             throw new OAuth2Exception($return);
         }
@@ -177,5 +177,25 @@ abstract class OAuth2Provider {
         return $this->parseResponse($response);
     }
 
+
+    public function setParams($key, $value)
+    {
+        $this->params[$key] = $value;
+        return $this;
+    }
+
+    public function flushParams()
+    {
+        $this->params = array();
+        return $this;
+    }
+
+    public function getParams($key)
+    {
+        if (isset($this->params[$key])) {
+            return $this->params[$key];
+        }
+        return null;
+    }
 
 }
