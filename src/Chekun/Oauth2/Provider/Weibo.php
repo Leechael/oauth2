@@ -60,4 +60,25 @@ class Weibo extends Oauth2Provider implements Oauth2ProviderInterface {
             'refresh_token' => $token->refreshToken
         );
     }
+
+    public function statuses_update(AccessToken $token, $status)
+    {
+        $url = static::API_URL . "statuses/update.json?" . http_build_query(array(
+            'access_token' => $token->accessToken,
+            'status' => $status,
+        ));
+        $resp = $this->client->post($url);
+        return json_decode($resp->getContent(), true);
+    }
+
+    public function statuses_upload_url_text(AccessToken $token, $status, $pic)
+    {
+        $url = static::API_URL . "statuses/upload_url_text.json?" . http_build_query(array(
+            'access_token' => $token->accessToken,
+            'status' => $status,
+            "url" => $pic,
+        ));
+        $resp = $this->client->post($url);
+        return json_decode($resp->getContent(), true);
+    }
 }
