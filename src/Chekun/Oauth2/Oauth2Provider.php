@@ -37,11 +37,14 @@ abstract class OAuth2Provider {
 
     protected $client = null;
 
+    protected $options = array();
+
     public function __construct(array $options = array())
     {
         if ( ! $this->name) {
             $this->name = strtolower(substr(get_class($this), strlen('OAuth2_Provider_')));
         }
+        $this->options = $options;
 
         if (empty($options['id'])) {
             throw new \Exception('Required option not provided: id');

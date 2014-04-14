@@ -4,6 +4,7 @@ use Chekun\Oauth2\Oauth2Provider;
 use Chekun\Oauth2\Oauth2ProviderInterface;
 use Chekun\Oauth2\Oauth2Exception;
 use Chekun\Oauth2\Token\AccessToken;
+use Chekun\Oauth2\Token\Token;
 
 class Weibo extends Oauth2Provider implements Oauth2ProviderInterface {
 
@@ -35,6 +36,38 @@ class Weibo extends Oauth2Provider implements Oauth2ProviderInterface {
             throw new Oauth2Exception(["code" => $errcode, "message" => $errdesc]);
         }
         return parent::access($code, $options);
+    }
+
+    // https://github.com/xiaosier/libweibo/blob/master/saetv2.ex.class.php#L215
+    public function signedRequest($sign, $app_secret = null, $options = array())
+    {
+        if (!$app_secret) {
+            if (isset($this->options["signed_request_secret"])) {
+                $app_secret = $this->options["signed_request_secret"];
+            } else {
+                $app_secret = $this->clientSecret;
+            }
+        }
+        list($encoded_sig, $payload) = explode('.', $sign, 2);
+        $sig = static::b64decode($encoded_sig) ;
+        $data = json_decode(static::b64decode($payload), true);
+        if (strtoupper($data['algorithm']) !== 'HMAC-SHA256') {
+            throw new Oauth2Exception(
+                "Unexpected algorithm: expected HMAC-SHA256 but get `{$data["algorithm"]}`."
+            );
+        }
+        $expected_sig = hash_hmac('sha256', $payload, $app_secret, true);
+        if ($sig !== $expected_sig) {
+            throw new Oauth2Exception("Unexpected Signature.");
+        }
+        $data["access_token_key"] = "oauth_token";
+        $data["uid_key"] = "user_id";
+        return Token::factory("access", $data);
+    }
+
+    static public function b64decode($str)
+    {
+        return base64_decode(strtr($str.str_repeat('=', (4 - strlen($str) % 4)), '-_', '+/'));
     }
 
     public function getUserInfo(AccessToken $token)
