@@ -78,7 +78,7 @@ class Weibo extends Oauth2Provider implements Oauth2ProviderInterface {
             ));
         $user = json_decode($this->client->get($url)->getContent());
         if (array_key_exists("error", $user)) {
-            throw new OAuth2Exception((array) $user);
+            throw new Oauth2Exception((array) $user);
         }
         return array(
             'via' => 'weibo',
